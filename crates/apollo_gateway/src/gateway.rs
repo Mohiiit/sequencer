@@ -27,14 +27,14 @@ use apollo_state_sync_types::communication::SharedStateSyncClient;
 use axum::async_trait;
 use blockifier::context::ChainInfo;
 use num_rational::Ratio;
-use starknet_api::block::{GasPrice, NonzeroGasPrice};
+use starknet_api::block::{GasPrice, GasPriceVector, NonzeroGasPrice};
 use starknet_api::executable_transaction::ValidateCompiledClassHashError;
 use starknet_api::rpc_transaction::{
     InternalRpcTransaction,
     InternalRpcTransactionWithoutTxHash,
     RpcTransaction,
 };
-use starknet_api::transaction::fields::ValidResourceBounds;
+use starknet_api::transaction::fields::{ResourceBounds, ValidResourceBounds};
 use tracing::{debug, error, info, instrument, warn, Span};
 
 use crate::config::GatewayConfig;
@@ -210,11 +210,11 @@ impl ProcessTxBlockingTask {
         // Skip this validation during the systems bootstrap phase.
         if self.stateless_tx_validator.config.validate_non_zero_resource_bounds {
             // TODO(Arni): get next_l2_gas_price from the block header.
-            let previous_block_l2_gas_price =
-                validator.block_context().block_info().gas_prices.strk_gas_prices.l2_gas_price;
-            validate_tx_l2_gas_price_within_threshold(
+            let previous_block_gas_price_vector =
+                &validator.block_context().block_info().gas_prices.strk_gas_prices;
+            validate_tx_gas_price_vector_within_threshold(
                 executable_tx.resource_bounds(),
-                previous_block_l2_gas_price,
+                previous_block_gas_price_vector,
                 self.stateful_tx_validator.config.min_gas_price_percentage,
             )?;
         }
@@ -238,22 +238,40 @@ impl ProcessTxBlockingTask {
     }
 }
 
-// TODO(Arni): Consider running this validation for all gas prices.
-fn validate_tx_l2_gas_price_within_threshold(
+fn validate_tx_gas_price_vector_within_threshold(
     tx_resource_bounds: ValidResourceBounds,
-    previous_block_l2_gas_price: NonzeroGasPrice,
+    previous_block_gas_price_vector: &GasPriceVector,
     min_gas_price_percentage: u8,
 ) -> GatewayResult<()> {
     match tx_resource_bounds {
         ValidResourceBounds::AllResources(tx_resource_bounds) => {
-            let tx_l2_gas_price = tx_resource_bounds.l2_gas.max_price_per_unit;
             let gas_price_threshold_multiplier =
                 Ratio::new(min_gas_price_percentage.into(), 100_u128);
-            validate_tx_gas_price_within_threshold(
-                tx_l2_gas_price,
-                previous_block_l2_gas_price,
-                gas_price_threshold_multiplier,
+            let validate_func = |resource_bounds: ResourceBounds,
+                                 previous_block_gas_price: NonzeroGasPrice,
+                                 gas_price_type: &str| {
+                validate_tx_gas_price_within_threshold(
+                    resource_bounds.max_price_per_unit,
+                    previous_block_gas_price,
+                    gas_price_threshold_multiplier,
+                    gas_price_type,
+                )
+            };
+
+            validate_func(
+                tx_resource_bounds.l1_gas,
+                previous_block_gas_price_vector.l1_gas_price,
+                "L1 gas price",
+            )?;
+            validate_func(
+                tx_resource_bounds.l2_gas,
+                previous_block_gas_price_vector.l2_gas_price,
                 "L2 gas price",
+            )?;
+            validate_func(
+                tx_resource_bounds.l1_data_gas,
+                previous_block_gas_price_vector.l1_data_gas_price,
+                "L1 data gas price",
             )?;
         }
         ValidResourceBounds::L1Gas(_) => {
