@@ -27,7 +27,7 @@ use apollo_state_sync_types::communication::SharedStateSyncClient;
 use axum::async_trait;
 use blockifier::context::ChainInfo;
 use num_rational::Ratio;
-use starknet_api::block::NonzeroGasPrice;
+use starknet_api::block::{GasPrice, NonzeroGasPrice};
 use starknet_api::executable_transaction::ValidateCompiledClassHashError;
 use starknet_api::rpc_transaction::{
     InternalRpcTransaction,
@@ -249,26 +249,40 @@ fn validate_tx_l2_gas_price_within_threshold(
             let tx_l2_gas_price = tx_resource_bounds.l2_gas.max_price_per_unit;
             let gas_price_threshold_multiplier =
                 Ratio::new(min_gas_price_percentage.into(), 100_u128);
-            let threshold =
-                (gas_price_threshold_multiplier * previous_block_l2_gas_price.get().0).to_integer();
-            if tx_l2_gas_price.0 < threshold {
-                return Err(StarknetError {
-                    // We didn't have this kind of an error.
-                    code: StarknetErrorCode::UnknownErrorCode(
-                        "StarknetErrorCode.GAS_PRICE_TOO_LOW".to_string(),
-                    ),
-                    message: format!(
-                        "Transaction L2 gas price {} is below the required threshold {}.",
-                        tx_l2_gas_price, threshold
-                    ),
-                });
-            }
+            validate_tx_gas_price_within_threshold(
+                tx_l2_gas_price,
+                previous_block_l2_gas_price,
+                gas_price_threshold_multiplier,
+                "L2 gas price",
+            )?;
         }
         ValidResourceBounds::L1Gas(_) => {
             // No validation required for legacy transactions.
         }
     }
 
+    Ok(())
+}
+
+fn validate_tx_gas_price_within_threshold(
+    tx_gas_price: GasPrice,
+    previous_block_gas_price: NonzeroGasPrice,
+    gas_price_threshold_multiplier: Ratio<u128>,
+    gas_price_type: &str,
+) -> GatewayResult<()> {
+    let threshold =
+        (gas_price_threshold_multiplier * previous_block_gas_price.get().0).to_integer();
+    if tx_gas_price.0 < threshold {
+        return Err(StarknetError {
+            code: StarknetErrorCode::UnknownErrorCode(
+                "StarknetErrorCode.GAS_PRICE_TOO_LOW".to_string(),
+            ),
+            message: format!(
+                "Transaction {} {} is below the required threshold {}.",
+                gas_price_type, tx_gas_price, threshold
+            ),
+        });
+    }
     Ok(())
 }
 
