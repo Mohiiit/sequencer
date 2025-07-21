@@ -3,7 +3,7 @@ use std::sync::LazyLock;
 
 use cairo_vm::types::builtin_name::BuiltinName;
 
-pub(crate) static BUILTIN_INSTANCE_SIZES: LazyLock<HashMap<BuiltinName, usize>> =
+pub static BUILTIN_INSTANCE_SIZES: LazyLock<HashMap<BuiltinName, usize>> =
     LazyLock::new(|| {
         HashMap::from([
             (BuiltinName::pedersen, 3),

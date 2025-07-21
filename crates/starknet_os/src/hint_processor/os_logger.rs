@@ -193,7 +193,7 @@ pub struct ResourceCounter {
 }
 
 impl ResourceCounter {
-    pub(crate) fn new(
+    pub fn new(
         n_steps: usize,
         range_check_ptr: Relocatable,
         ids_data: &HashMap<String, HintReference>,
@@ -330,7 +330,7 @@ impl ResourceCounter {
 }
 
 pub struct OsLogger {
-    pub(crate) debug: bool,
+    pub debug: bool,
     current_tx: Option<OsTransactionTrace>,
     tab_count: usize,
     syscall_stack: Vec<SyscallTrace>,

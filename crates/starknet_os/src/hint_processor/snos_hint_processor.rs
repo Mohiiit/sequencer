@@ -95,22 +95,22 @@ impl<'a, S: StateReader> ExecutionHelpersManager<'a, S> {
 
 pub struct SnosHintProcessor<'a, S: StateReader> {
     // The program being run. The hint processor does not require ownership.
-    pub(crate) os_program: &'a Program,
-    pub(crate) execution_helpers_manager: ExecutionHelpersManager<'a, S>,
-    pub(crate) os_hints_config: OsHintsConfig,
+    pub os_program: &'a Program,
+    pub execution_helpers_manager: ExecutionHelpersManager<'a, S>,
+    pub os_hints_config: OsHintsConfig,
     pub syscall_hint_processor: SyscallHintProcessor,
-    pub(crate) deprecated_compiled_classes: BTreeMap<ClassHash, ContractClass>,
-    pub(crate) compiled_classes: BTreeMap<ClassHash, CasmContractClass>,
-    pub(crate) state_update_pointers: Option<StateUpdatePointers>,
-    pub(crate) deprecated_syscall_hint_processor: DeprecatedSyscallHintProcessor,
+    pub deprecated_compiled_classes: BTreeMap<ClassHash, ContractClass>,
+    pub compiled_classes: BTreeMap<ClassHash, CasmContractClass>,
+    pub state_update_pointers: Option<StateUpdatePointers>,
+    pub deprecated_syscall_hint_processor: DeprecatedSyscallHintProcessor,
     builtin_hint_processor: BuiltinHintProcessor,
     // The type of commitment tree next in line for hashing. Used to determine which HashBuiltin
     // type is to be used.
-    pub(crate) commitment_type: CommitmentType,
+    pub commitment_type: CommitmentType,
     // KZG fields.
     da_segment: Option<Vec<Felt>>,
     // Indicates wether to create pages or not when serializing data-availability.
-    pub(crate) serialize_data_availability_create_pages: bool,
+    pub serialize_data_availability_create_pages: bool,
     // For testing, track hint coverage.
     #[cfg(feature = "testing")]
     pub unused_hints: HashSet<AllHints>,
@@ -312,11 +312,11 @@ pub struct SyscallHintProcessor {
     // Sha256 segments.
     sha256_segment: Option<Relocatable>,
     syscall_ptr: Option<Relocatable>,
-    pub(crate) syscall_usage: SyscallUsageMap,
+    pub syscall_usage: SyscallUsageMap,
 
     // Secp hint processors.
-    pub(crate) secp256k1_hint_processor: SecpHintProcessor<ark_secp256k1::Config>,
-    pub(crate) secp256r1_hint_processor: SecpHintProcessor<ark_secp256r1::Config>,
+    pub secp256k1_hint_processor: SecpHintProcessor<ark_secp256k1::Config>,
+    pub secp256r1_hint_processor: SecpHintProcessor<ark_secp256r1::Config>,
 }
 
 // TODO(Dori): remove this #[allow] after the constructor is no longer trivial.
@@ -364,8 +364,8 @@ impl SyscallHintProcessor {
 }
 
 pub struct DeprecatedSyscallHintProcessor {
-    pub(crate) syscall_ptr: Option<Relocatable>,
-    pub(crate) syscalls_usage: SyscallUsageMap,
+    pub syscall_ptr: Option<Relocatable>,
+    pub syscalls_usage: SyscallUsageMap,
 }
 
 // TODO(Dori): remove this #[allow] after the constructor is no longer trivial.

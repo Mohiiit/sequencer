@@ -20,11 +20,11 @@ use crate::io::os_input::{CachedStateInput, OsBlockInput};
 
 /// A helper struct that provides access to the OS state and commitments.
 pub struct OsExecutionHelper<'a, S: StateReader> {
-    pub(crate) cached_state: CachedState<S>,
-    pub(crate) os_block_input: &'a OsBlockInput,
-    pub(crate) os_logger: OsLogger,
-    pub(crate) tx_execution_iter: TransactionExecutionIter<'a>,
-    pub(crate) tx_tracker: TransactionTracker<'a>,
+    pub cached_state: CachedState<S>,
+    pub os_block_input: &'a OsBlockInput,
+    pub os_logger: OsLogger,
+    pub tx_execution_iter: TransactionExecutionIter<'a>,
+    pub tx_tracker: TransactionTracker<'a>,
 }
 
 impl<'a, S: StateReader> OsExecutionHelper<'a, S> {
