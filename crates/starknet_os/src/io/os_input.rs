@@ -44,12 +44,12 @@ impl Default for CommitmentInfo {
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[derive(Clone, Debug)]
 pub struct ContractClassComponentHashes {
-    contract_class_version: Felt,
-    external_functions_hash: HashOutput,
-    l1_handlers_hash: HashOutput,
-    constructors_hash: HashOutput,
-    abi_hash: HashOutput,
-    sierra_program_hash: HashOutput,
+    pub contract_class_version: Felt,
+    pub external_functions_hash: HashOutput,
+    pub l1_handlers_hash: HashOutput,
+    pub constructors_hash: HashOutput,
+    pub abi_hash: HashOutput,
+    pub sierra_program_hash: HashOutput,
 }
 
 impl ContractClassComponentHashes {
