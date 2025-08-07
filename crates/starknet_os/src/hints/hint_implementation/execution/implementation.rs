@@ -948,6 +948,7 @@ pub(crate) fn get_old_block_number_and_hash<S: StateReader>(
             stored_block_hash_buffer: *Const::StoredBlockHashBuffer.fetch(constants)?,
         })?;
 
+    println!(">>>>> testing with the block number: {:?} and hash here: {:?}", old_block_number, old_block_hash);
     let ids_old_block_number = BlockNumber(
         get_integer_from_var_name(Ids::OldBlockNumber.into(), vm, ids_data, ap_tracking)?
             .try_into()
