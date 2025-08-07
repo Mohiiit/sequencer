@@ -252,6 +252,7 @@ pub(crate) fn get_block_hash_contract_address_state_entry_and_set_new_state_entr
 >(
     HintArgs { vm, exec_scopes, constants, ap_tracking, ids_data, .. }: HintArgs<'_, '_, S>,
 ) -> OsHintResult {
+    println!(">>>>>> we are in the get_block_hash_contract_address_state_entry_and_set_new_state_entry");
     let block_hash_contract_address = Const::BlockHashContractAddress.fetch(constants)?;
     set_state_entry(block_hash_contract_address, vm, exec_scopes, ids_data, ap_tracking)
 }

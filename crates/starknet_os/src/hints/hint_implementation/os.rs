@@ -126,6 +126,7 @@ pub(crate) fn log_remaining_blocks<S: StateReader>(
     HintArgs { vm, ids_data, ap_tracking, .. }: HintArgs<'_, '_, S>,
 ) -> OsHintResult {
     let n_blocks = get_integer_from_var_name(Ids::NBlocks.into(), vm, ids_data, ap_tracking)?;
+    println!(">>>> blocks remaining: {:?}", n_blocks);
     log::debug!("execute_blocks: {n_blocks} blocks remaining.");
     Ok(())
 }
