@@ -23,6 +23,17 @@ pub(crate) fn remaining_gas_gt_max<S: StateReader>(
 }
 
 #[allow(clippy::result_large_err)]
+pub(crate) fn just_print_stuff_for_me<S: StateReader>(
+    HintArgs { vm, ids_data, ap_tracking, .. }: HintArgs<'_, '_, S>,
+) -> OsHintResult {
+    let remaining_gas =
+        get_integer_from_var_name(Ids::RemainingGas.into(), vm, ids_data, ap_tracking)?;
+    let max_gas = get_integer_from_var_name(Ids::MaxGas.into(), vm, ids_data, ap_tracking)?;
+    let remaining_gas_gt_max: Felt = (remaining_gas > max_gas).into();
+    Ok(insert_value_into_ap(vm, remaining_gas_gt_max)?)
+}
+
+#[allow(clippy::result_large_err)]
 pub(crate) fn debug_expected_initial_gas<S: StateReader>(
     HintArgs { hint_processor, vm, ids_data, ap_tracking, .. }: HintArgs<'_, '_, S>,
 ) -> OsHintResult {

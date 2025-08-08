@@ -18,6 +18,7 @@ pub(crate) fn block_number<S: StateReader>(
 ) -> OsHintResult {
     let block_number =
         hint_processor.get_current_execution_helper()?.os_block_input.block_info.block_number;
+    log::debug!("block number we got is: {:?}", block_number);
     Ok(insert_value_into_ap(vm, Felt::from(block_number.0))?)
 }
 
@@ -44,6 +45,7 @@ pub(crate) fn fee_token_address<S: StateReader>(
     HintArgs { hint_processor, vm, .. }: HintArgs<'_, '_, S>,
 ) -> OsHintResult {
     let strk_fee_token_address = hint_processor.os_hints_config.chain_info.strk_fee_token_address;
+    log::debug!("fee token address here is: {:?}", strk_fee_token_address);
     Ok(insert_value_into_ap(vm, strk_fee_token_address.0.key())?)
 }
 
