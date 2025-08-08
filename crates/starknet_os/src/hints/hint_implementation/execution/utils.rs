@@ -115,6 +115,7 @@ pub(crate) fn set_state_entry<'a>(
     ids_data: &'a HashMap<String, HintReference>,
     ap_tracking: &'a ApTracking,
 ) -> OsHintResult {
+    log::debug!("within the set_state_entry function now");
     let state_changes_ptr =
         get_ptr_from_var_name(Ids::ContractStateChanges.into(), vm, ids_data, ap_tracking)?;
     let dict_manager = exec_scopes.get_dict_manager()?;
@@ -122,6 +123,7 @@ pub(crate) fn set_state_entry<'a>(
     let state_entry =
         dict_manager_borrowed.get_tracker_mut(state_changes_ptr)?.get_value(&key.into())?;
     insert_value_from_var_name(Ids::StateEntry.into(), state_entry, vm, ids_data, ap_tracking)?;
+    log::debug!("done with the set_state_entry function");
     Ok(())
 }
 
