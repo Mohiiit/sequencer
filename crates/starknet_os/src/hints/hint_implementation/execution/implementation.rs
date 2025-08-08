@@ -943,6 +943,7 @@ pub(crate) fn cache_contract_storage_syscall_request_address<S: StateReader>(
 pub(crate) fn get_old_block_number_and_hash<S: StateReader>(
     HintArgs { hint_processor, vm, ids_data, ap_tracking, constants, .. }: HintArgs<'_, '_, S>,
 ) -> OsHintResult {
+    log::debug!("in the get_old_block_number_and_hash fn now");
     let os_input = &hint_processor.get_current_execution_helper()?.os_block_input;
     let (old_block_number, old_block_hash) =
         os_input.old_block_number_and_hash.ok_or(OsHintError::BlockNumberTooSmall {

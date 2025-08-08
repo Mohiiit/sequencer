@@ -62,7 +62,9 @@ pub(crate) fn sequencer_address<S: StateReader>(
 pub(crate) fn get_block_mapping<S: StateReader>(
     HintArgs { ids_data, constants, vm, ap_tracking, exec_scopes, .. }: HintArgs<'_, '_, S>,
 ) -> OsHintResult {
+    log::debug!("within the get_block_mapping");
     let block_hash_contract_address = Const::BlockHashContractAddress.fetch(constants)?;
+    log::debug!("the block hash contract address is: {:?}", block_hash_contract_address);
     set_state_entry(block_hash_contract_address, vm, exec_scopes, ids_data, ap_tracking)
 }
 
