@@ -120,8 +120,10 @@ pub(crate) fn set_state_entry<'a>(
         get_ptr_from_var_name(Ids::ContractStateChanges.into(), vm, ids_data, ap_tracking)?;
     let dict_manager = exec_scopes.get_dict_manager()?;
     let mut dict_manager_borrowed = dict_manager.borrow_mut();
+    log::debug!("checkpoint 1 within the set_state_entry");
     let state_entry =
         dict_manager_borrowed.get_tracker_mut(state_changes_ptr)?.get_value(&key.into())?;
+    log::debug!("checkpoint 2 within the set_state_entry");
     insert_value_from_var_name(Ids::StateEntry.into(), state_entry, vm, ids_data, ap_tracking)?;
     log::debug!("done with the set_state_entry function");
     Ok(())
