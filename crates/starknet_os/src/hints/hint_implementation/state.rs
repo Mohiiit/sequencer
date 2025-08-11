@@ -98,8 +98,10 @@ pub(crate) fn set_preimage_for_current_commitment_info<S: StateReader>(
     let contract_address: ContractAddress =
         get_integer_from_var_name(Ids::ContractAddress.into(), vm, ids_data, ap_tracking)?
             .try_into()?;
+    log::debug!("contract address here is: {:?}", contract_address);
     hint_processor.commitment_type = CommitmentType::Contract(contract_address);
     let commitment_info = hint_processor.get_commitment_info()?;
+    log::debug!("commitment info here is: {:?}", commitment_info);
     insert_value_from_var_name(
         Ids::InitialContractStateRoot.into(),
         commitment_info.previous_root.0,
@@ -121,6 +123,7 @@ pub(crate) fn set_preimage_for_current_commitment_info<S: StateReader>(
 
     // No need to insert the preimage map into the scope, as we extract it directly
     // from the execution helper.
+    log::debug!("set_preimage_for_current_commitment_info ran successfully for now");
     Ok(())
 }
 
