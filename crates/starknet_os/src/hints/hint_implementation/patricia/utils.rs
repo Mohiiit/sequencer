@@ -281,7 +281,7 @@ pub(crate) fn create_preimage_mapping(
     log::debug!("entering the create_preimage_mapping fn");
     let mut preimage_mapping = PreimageMap::new();
     for (hash, raw_preimage) in commitment_facts.iter() {
-        log::debug!("trying to add mapping for hash: {:?} and vec<felt> is: {:?}", raw_preimage);
+        log::debug!("trying to add mapping for hash: {:?} and vec<felt> is: {:?}",hash, raw_preimage);
         preimage_mapping.insert(*hash, Preimage::try_from(raw_preimage)?);
         log::debug!("done it successfully for the hash: {:?}", hash);
     }
