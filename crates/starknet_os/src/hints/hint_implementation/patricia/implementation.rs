@@ -235,6 +235,7 @@ pub(crate) fn build_descent_map<S: StateReader>(
     hint_processor: &mut SnosHintProcessor<'_, S>,
     HintArgs { vm, exec_scopes, ids_data, ap_tracking, .. }: HintArgs<'_>,
 ) -> OsHintResult {
+    log::debug!("starting in the build_descent_map fn");
     let n_updates: usize = Ids::NUpdates.fetch_as(vm, ids_data, ap_tracking)?;
 
     let update_ptr_address =
@@ -280,7 +281,7 @@ pub(crate) fn build_descent_map<S: StateReader>(
 
     // We don't support hash verification skipping and the scope variable
     // `__patricia_skip_validation_runner`.
-
+    log::debug!("fn build_descent_map exited successfully");
     Ok(())
 }
 

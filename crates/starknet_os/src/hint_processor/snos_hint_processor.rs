@@ -264,15 +264,24 @@ impl<'a, S: StateReader> SnosHintProcessor<'a, S> {
     pub fn get_commitment_info(&self) -> Result<&CommitmentInfo, ExecutionHelperError> {
         let os_input = self.get_current_execution_helper()?.os_block_input;
         Ok(match self.commitment_type {
-            CommitmentType::Class => &os_input.contract_class_commitment_info,
-            CommitmentType::State => &os_input.contract_state_commitment_info,
-            CommitmentType::Contract(contract_address) => self
-                .execution_helpers_manager
-                .get_current_execution_helper()?
-                .os_block_input
-                .address_to_storage_commitment_info
-                .get(&contract_address)
-                .ok_or(ExecutionHelperError::MissingCommitmentInfo(contract_address))?,
+            CommitmentType::Class => {
+                log::debug!("commitment type class");
+                &os_input.contract_class_commitment_info
+            },
+            CommitmentType::State => {
+                log::debug!("commitment type state");
+                &os_input.contract_state_commitment_info
+            },
+            CommitmentType::Contract(contract_address) => {
+                log::debug!("commitment type contract with address: {:?}", contract_address);
+                self
+                    .execution_helpers_manager
+                    .get_current_execution_helper()?
+                    .os_block_input
+                    .address_to_storage_commitment_info
+                    .get(&contract_address)
+                    .ok_or(ExecutionHelperError::MissingCommitmentInfo(contract_address))?
+            },
         })
     }
 }

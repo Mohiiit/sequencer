@@ -278,9 +278,12 @@ pub(crate) fn build_update_tree(
 pub(crate) fn create_preimage_mapping(
     commitment_facts: &HashMap<HashOutput, Vec<Felt>>,
 ) -> Result<PreimageMap, PatriciaError> {
+    log::debug!("entering the create_preimage_mapping fn");
     let mut preimage_mapping = PreimageMap::new();
     for (hash, raw_preimage) in commitment_facts.iter() {
+        log::debug!("trying to add mapping for hash: {:?} and vec<felt> is: {:?}", raw_preimage);
         preimage_mapping.insert(*hash, Preimage::try_from(raw_preimage)?);
+        log::debug!("done it successfully for the hash: {:?}", hash);
     }
     Ok(preimage_mapping)
 }
