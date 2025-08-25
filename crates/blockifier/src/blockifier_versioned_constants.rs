@@ -316,7 +316,9 @@ impl VersionedConstants {
     /// Converts L1 gas amount to Sierra (L2) gas amount with **upward rounding**.
     pub fn l1_gas_to_sierra_gas_amount_round_up(&self, l1_gas_amount: GasAmount) -> GasAmount {
         // The amount ratio is the inverse of the price ratio.
-        (*(self.sierra_gas_in_l1_gas_amount().inv() * l1_gas_amount.0).ceil().numer()).into()
+        let amount = (*(self.sierra_gas_in_l1_gas_amount().inv() * l1_gas_amount.0).ceil().numer()).into();
+        log::debug!("the amount in the l1_gas_to_sierra_gas_amount_round_up is: {:?}", amount);
+        amount
     }
 
     /// Converts Sierra (L2) gas amount to L1 gas amount with **upward rounding**.

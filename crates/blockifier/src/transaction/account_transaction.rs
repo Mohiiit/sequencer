@@ -672,6 +672,7 @@ impl AccountTransaction {
             Ok(execute_call_info) => {
                 // When execution succeeded, calculate the actual required fee before committing the
                 // transactional state. If max_fee is insufficient, revert the `run_execute` part.
+                // log::debug!("validate call info is: {:?} and execute call info is: {:?}", validate_call_info, execute_call_info);
                 let tx_receipt = TransactionReceipt::from_account_tx(
                     self,
                     &tx_context,
@@ -789,6 +790,7 @@ impl<U: UpdatableState> ExecutableTransaction<U> for AccountTransaction {
         block_context: &BlockContext,
         concurrency_mode: bool,
     ) -> TransactionExecutionResult<TransactionExecutionInfo> {
+        log::debug!(">>>>>>>> executing execute raw of the account transaction");
         let tx_context = Arc::new(block_context.to_tx_context(self));
         self.verify_tx_version(tx_context.tx_info.version())?;
 
@@ -823,6 +825,7 @@ impl<U: UpdatableState> ExecutableTransaction<U> for AccountTransaction {
 
         // Run validation and execution.
         let initial_gas = tx_context.initial_sierra_gas();
+        log::debug!(">>>>>>>> the initial gas amount is: {:?}", initial_gas);
         let ValidateExecuteCallInfo {
             validate_call_info,
             execute_call_info,
@@ -969,6 +972,11 @@ impl ValidatableTransaction for AccountTransaction {
             }
         }
         remaining_gas.subtract_used_gas(&validate_call_info);
+        log::debug!("builtin counters map in the validation was: {:?}", validate_call_info.builtin_counters);
+        log::debug!("resources map in the validation was: {:?}", validate_call_info.resources);
+        log::debug!("storage access tracker is: {:?}", validate_call_info.storage_access_tracker);
+        log::debug!("remaining fee after the validation is: {:?}", remaining_gas);
+        log::debug!("#### validate call info is: {:?} ####", validate_call_info);
         Ok(Some(validate_call_info))
     }
 }

@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-
+use cairo_lang_casm::res;
 use cairo_vm::types::builtin_name::BuiltinName;
 use cairo_vm::vm::runners::cairo_runner::ExecutionResources;
 use num_bigint::BigUint;
@@ -74,9 +74,16 @@ pub fn get_vm_resources_cost(
     let vm_resource_fee_costs = versioned_constants.vm_resource_fee_cost();
     let builtin_usage_for_fee = vm_resource_usage.prover_builtins();
 
+    log::debug!("vm resources fee cost is: {:?}", vm_resource_fee_costs);
+    log::debug!("builtin usuage fee: {:?}", builtin_usage_for_fee);
+
     // Validate used builtin resources.
     let used_builtins = HashSet::<&BuiltinName>::from_iter(builtin_usage_for_fee.keys());
     let known_builtins = HashSet::<&BuiltinName>::from_iter(vm_resource_fee_costs.builtins.keys());
+
+    log::debug!("used builtins are: {:?}", used_builtins);
+    log::debug!("known builtins are: {:?}", known_builtins);
+
     assert!(
         used_builtins.is_subset(&known_builtins),
         "{:#?} should contain {:#?}",
@@ -103,13 +110,16 @@ pub fn get_vm_resources_cost(
         )])
         .map(|(cost, usage)| (cost * u64_from_usize(usage)).ceil().to_integer())
         .fold(0, u64::max).into();
-
-    match computation_mode {
+    log::debug!("computation mode is: {:?}", computation_mode);
+    log::debug!("the vm_l1_gas_usage is: {:?}", vm_l1_gas_usage);
+    let result_here = match computation_mode {
         GasVectorComputationMode::NoL2Gas => GasVector::from_l1_gas(vm_l1_gas_usage),
         GasVectorComputationMode::All => GasVector::from_l2_gas(
             versioned_constants.l1_gas_to_sierra_gas_amount_round_up(vm_l1_gas_usage),
         ),
-    }
+    };
+    log::debug!("the result of the computation mode is: {:?}", result_here);
+    result_here
 }
 
 /// Converts the gas vector to a fee.

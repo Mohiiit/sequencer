@@ -236,6 +236,7 @@ impl CallEntryPoint {
                 });
             }
         }
+        log::debug!("execution result is: {:?}", execution_result);
 
         execution_result
     }

@@ -64,6 +64,7 @@ impl TransactionReceipt {
             reverted_sierra_gas,
         } = tx_receipt_params;
         let charged_resources = execution_summary_without_fee_transfer.charged_resources.clone();
+        log::debug!("charged resources are: {:?}", charged_resources);
         let starknet_resources = StarknetResources::new(
             calldata_length,
             signature_length,
@@ -72,6 +73,8 @@ impl TransactionReceipt {
             l1_handler_payload_size,
             execution_summary_without_fee_transfer,
         );
+
+        log::debug!("starknet resources here is: {:?}", starknet_resources);
 
         // Transaction overhead ('additional') resources are computed in VM resources no matter what
         // the tracked resources of the transaction are.
@@ -96,11 +99,15 @@ impl TransactionReceipt {
             },
         };
 
+        log::debug!("txn resources here is: {:?}", tx_resources);
+
         let gas = tx_resources.to_gas_vector(
             &tx_context.block_context.versioned_constants,
             tx_context.block_context.block_info.use_kzg_da,
             &gas_mode,
         );
+
+        log::debug!("gas is:{:?}", gas);
         // Backward-compatibility.
         let fee = if tx_type == TransactionType::Declare && tx_context.tx_info.is_v0() {
             Fee(0)
@@ -111,6 +118,8 @@ impl TransactionReceipt {
                 tx_context.effective_tip(),
             )
         };
+
+        log::debug!("fee is: {:?}", fee);
 
         let da_gas = tx_resources
             .starknet_resources
