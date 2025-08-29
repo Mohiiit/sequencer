@@ -136,7 +136,6 @@ impl<U: UpdatableState> ExecutableTransaction<U> for Transaction {
         block_context: &BlockContext,
         concurrency_mode: bool,
     ) -> TransactionExecutionResult<TransactionExecutionInfo> {
-        log::debug!(">>>> running executable transaction execute_raw");
         // TODO(Yoni, 1/8/2024): consider unimplementing the ExecutableTransaction trait for inner
         // types, since now running Transaction::execute_raw is not identical to
         // AccountTransaction::execute_raw.

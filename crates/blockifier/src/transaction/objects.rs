@@ -226,7 +226,6 @@ pub trait ExecutionResourcesTraits {
 
 impl ExecutionResourcesTraits for ExecutionResources {
     fn total_n_steps(&self) -> usize {
-        let steps =
         self.n_steps
             // The "segment arena" builtin is not part of the prover (not in any proof layout);
             // It is transformed into regular steps by the OS program - each instance requires
@@ -236,9 +235,7 @@ impl ExecutionResourcesTraits for ExecutionResources {
                     .builtin_instance_counter
                     .get(&BuiltinName::segment_arena)
                     .cloned()
-                    .unwrap_or_default();
-        log::debug!("in the total_n_steps, steps are: {:?}", steps);
-        steps
+                    .unwrap_or_default()
     }
 
     fn prover_builtins(&self) -> BuiltinCounterMap {

@@ -86,7 +86,6 @@ impl TransactionContext {
     }
 }
 
-#[derive(Clone, Debug)]
 pub struct GasCounter {
     pub(crate) spent_gas: GasAmount,
     pub(crate) remaining_gas: GasAmount,

@@ -43,9 +43,7 @@ impl TransactionResources {
             use_kzg_da,
             computation_mode,
         );
-        println!("starknet gas: {:?}", starknet_gas);
         let computation_gas = self.computation.to_gas_vector(versioned_constants, computation_mode);
-        println!("computation gas: {:?}", computation_gas);
         starknet_gas.checked_add(computation_gas).unwrap_or_else(|| {
             panic!(
                 "Transaction resources to gas vector overflowed: starknet gas cost is \
@@ -86,9 +84,6 @@ impl ComputationResources {
             computation_mode,
         );
 
-        log::debug!("the vm cost is: {:?}", vm_cost);
-        log::debug!("the sierra gas as of now is: {:?}", self.sierra_gas);
-
         let total_sierra_gas =
             self.sierra_gas.checked_add(self.reverted_sierra_gas).unwrap_or_else(|| {
                 panic!(
@@ -96,16 +91,12 @@ impl ComputationResources {
                     self.sierra_gas, self.reverted_sierra_gas
                 )
             });
-
-        log::debug!("total sierra gas is: {:?}", total_sierra_gas);
         let sierra_gas_cost = match computation_mode {
             GasVectorComputationMode::All => GasVector::from_l2_gas(total_sierra_gas),
             GasVectorComputationMode::NoL2Gas => GasVector::from_l1_gas(
                 versioned_constants.sierra_gas_to_l1_gas_amount_round_up(total_sierra_gas),
             ),
         };
-
-        log::debug!("sierra gas cost is: {:?}", sierra_gas_cost);
 
         vm_cost.checked_add(sierra_gas_cost).unwrap_or_else(|| {
             panic!(
