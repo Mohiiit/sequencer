@@ -5,8 +5,18 @@ use std::sync::Arc;
 use ark_ec::short_weierstrass::{Affine, Projective, SWCurveConfig};
 use ark_ff::{BigInt, PrimeField};
 use cairo_native::starknet::{
-    BlockInfo, ExecutionInfo, ExecutionInfoV2, ExecutionInfoV3, Secp256k1Point, Secp256r1Point,
-    StarknetSyscallHandler, SyscallResult, TxInfo, TxV2Info, TxV3Info, U256,
+    BlockInfo,
+    ExecutionInfo,
+    ExecutionInfoV2,
+    ExecutionInfoV3,
+    Secp256k1Point,
+    Secp256r1Point,
+    StarknetSyscallHandler,
+    SyscallResult,
+    TxInfo,
+    TxV2Info,
+    TxV3Info,
+    U256,
 };
 use num_bigint::BigUint;
 use starknet_api::block::BlockNumber;
@@ -15,7 +25,10 @@ use starknet_api::core::{ClassHash, ContractAddress, EntryPointSelector, L1Addre
 use starknet_api::execution_resources::GasAmount;
 use starknet_api::state::StorageKey;
 use starknet_api::transaction::fields::{
-    Calldata, ContractAddressSalt, ProofFacts, TransactionSignature,
+    Calldata,
+    ContractAddressSalt,
+    ProofFacts,
+    TransactionSignature,
 };
 use starknet_api::transaction::{EventContent, EventData, EventKey, L2ToL1Payload};
 use starknet_types_core::felt::Felt;
@@ -24,18 +37,26 @@ use crate::blockifier_versioned_constants::GasCosts;
 use crate::execution::call_info::{MessageToL1, Retdata};
 use crate::execution::common_hints::ExecutionMode;
 use crate::execution::entry_point::{
-    CallEntryPoint, CallType, EntryPointExecutionContext, ExecutableCallEntryPoint,
+    CallEntryPoint,
+    CallType,
+    EntryPointExecutionContext,
+    ExecutableCallEntryPoint,
 };
 use crate::execution::errors::EntryPointExecutionError;
 use crate::execution::native::utils::{
-    calculate_resource_bounds, default_tx_v2_info, tx_v2_info_to_tx_v3_info,
+    calculate_resource_bounds,
+    default_tx_v2_info,
+    tx_v2_info_to_tx_v3_info,
 };
 use crate::execution::secp;
 use crate::execution::syscalls::common_syscall_logic::base_keccak;
-use crate::execution::syscalls::hint_processor::{OUT_OF_GAS_ERROR_FELT, SyscallExecutionError};
+use crate::execution::syscalls::hint_processor::{SyscallExecutionError, OUT_OF_GAS_ERROR_FELT};
 use crate::execution::syscalls::syscall_base::SyscallHandlerBase;
 use crate::execution::syscalls::vm_syscall_utils::{
-    SelfOrRevert, SyscallExecutorBaseError, SyscallSelector, TryExtractRevert,
+    SelfOrRevert,
+    SyscallExecutorBaseError,
+    SyscallSelector,
+    TryExtractRevert,
 };
 use crate::state::state_api::State;
 use crate::transaction::objects::TransactionInfo;
