@@ -1739,7 +1739,7 @@ async fn test_deploy_account_v3_empty_deployment_data_span_emit() {
         compiled_class_hash,
         resource_bounds: *NON_TRIVIAL_RESOURCE_BOUNDS,
     };
-    let class_info = account.get_class_info();
+    let class_info = get_class_info_of_feature_contract(account);
     let account_declare_tx =
         DeclareTransaction::create(declare_tx(declare_args), class_info, chain_id).unwrap();
     test_builder.add_cairo1_declare_tx(account_declare_tx, &account_sierra);
@@ -1754,7 +1754,7 @@ async fn test_deploy_account_v3_empty_deployment_data_span_emit() {
         class_hash: proxy_class_hash,
         sender_address: *FUNDED_ACCOUNT_ADDRESS,
     };
-    let proxy_class_info = proxy.get_class_info();
+    let proxy_class_info = get_class_info_of_feature_contract(proxy);
     let proxy_declare_tx =
         DeclareTransaction::create(declare_tx(proxy_declare_args), proxy_class_info, chain_id)
             .unwrap();

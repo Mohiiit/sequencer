@@ -96,12 +96,11 @@ use crate::utils::{
 };
 
 /// The STRK fee token address that was deployed when initializing the default initial state.
-/// The resulting address depends on the nonce of the deploying account - if extra init transactions
-/// are added to the initial state construction before the STRK fee token is deployed, the address
-/// must be updated.
+/// The resulting address depends on the deploying account's class hash and nonce. Recompiling that
+/// account with a new Cairo compiler or adding earlier init transactions changes this fixture.
 pub(crate) const EXPECTED_STRK_FEE_TOKEN_ADDRESS: Expect = expect![
     r#"
-    0x4ff17bf76a1c6cebb82601a43bcab4f9650aea543c44f28e8863f8b624e4b58
+    0x18bfdb8f0fddfcc46ce7822c567f7b0de2db0bcb4516843857e102d2c4d8f29
 "#
 ];
 const SEQUENCER_ADDRESS_FELT: Felt = Felt::from_hex_unchecked(TEST_SEQUENCER_ADDRESS);
