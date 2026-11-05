@@ -397,7 +397,7 @@ async fn concurrent_snos_admission_matches_real_output_and_rolls_back_rejection(
     let smaller_tx = rollback.create_funded_account_invoke(invoke_tx_args! {
         calldata: create_calldata(
             test_contract_address,
-            "test_storage_read",
+            "get_value",
             &[Felt::from(0x123_u16)],
         )
     });
