@@ -124,6 +124,7 @@ pub(crate) struct TestBuilderConfig {
     pub(crate) use_kzg_da: bool,
     pub(crate) full_output: bool,
     pub(crate) private_keys: Option<Vec<Felt>>,
+    pub(crate) max_snos_full_output_cells: Option<usize>,
 }
 
 pub(crate) struct FlowTestTx {
@@ -448,6 +449,7 @@ pub(crate) struct TestBuilder<S: FlowTestState> {
     pub(crate) virtual_os: bool,
     pub(crate) messages_to_l1: Vec<MessageToL1>,
     pub(crate) messages_to_l2: Vec<MessageToL2>,
+    pub(crate) max_snos_full_output_cells: Option<usize>,
 
     per_block_txs: Vec<Vec<FlowTestTx>>,
 }
@@ -480,6 +482,7 @@ impl<S: FlowTestState> TestBuilder<S> {
             virtual_os,
             messages_to_l1: Vec::new(),
             messages_to_l2: Vec::new(),
+            max_snos_full_output_cells: config.max_snos_full_output_cells,
             per_block_txs: vec![vec![]],
         }
     }
@@ -847,12 +850,15 @@ impl<S: FlowTestState> TestBuilder<S> {
         let mut predicted_snos_full_output_cells_per_block =
             Vec::with_capacity(self.per_block_txs.len());
         for (block_index, block_txs_with_reason) in self.per_block_txs.into_iter().enumerate() {
-            let block_context = if self.virtual_os {
+            let mut block_context = if self.virtual_os {
                 // In virtual OS mode, the block context is the same as the base block context.
                 base_block_context.clone()
             } else {
                 BlockContext::from_base_context(&base_block_context, block_index, use_kzg_da)
             };
+            if let Some(max_output_cells) = self.max_snos_full_output_cells {
+                block_context.bouncer_config.max_snos_full_output_cells = max_output_cells;
+            }
 
             let (block_txs, revert_reasons, event_expectations_per_tx): (Vec<_>, Vec<_>, Vec<_>) =
                 block_txs_with_reason
